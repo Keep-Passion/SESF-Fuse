@@ -9,7 +9,7 @@ We provide the training and testing method of SESF-Fuse in this branch.
 We provide a general image fusion framework in [experiment branch](https://github.com/MATony/SESF-Fuse/tree/Experiment), which include all the experiments in our paper. Besides, one can easily modify it for new experiment.
 
 ## Requirements
-Pytorch, Pyhon3.6
+Pytorch, Python3.6
 
 ## Citation
 Still in submission.

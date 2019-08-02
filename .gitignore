@@ -102,3 +102,16 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# txt
+*.txt
+
+# different_methods
+data/result/multi_focus/different_methods/
+
+#idea
+.idea/
+
+evaluation_methods/
+
+fusion_methods/

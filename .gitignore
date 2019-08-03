@@ -108,3 +108,9 @@ venv.bak/
 
 # result
 data/result/
+
+# fusion_methods
+fusion_methods/
+
+# evaluation
+evaluation_methods/

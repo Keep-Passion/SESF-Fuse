@@ -257,21 +257,28 @@ def multi_focus():
     # # fuse images by methods in methods_id
     # methods_id = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18]
     # fuse_images(input_dir, output_dir, methods_id=methods_id, log_address=log_address)
-
-    # evaluate result by metrics in metrics_id
-    metrics_id = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
-    methods_list = os.listdir(fused_dir)
-    methods_list = [
-        # 'deep_fuse', 'se_absmax',
-        #             'se_average', 'se_l1_norm',
-                    'se_max', 'se_sf',
-                    'se_sf_dm', 'dense_sf_dm'
-                    ]
-    evaluate_fused(input_dir, fused_dir, record_dir, methods_list, metrics_id=metrics_id, log_address=log_address)
+    #
+    # # evaluate result by metrics in metrics_id
+    # metrics_id = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
+    # methods_list = os.listdir(fused_dir)
+    # evaluate_fused(input_dir, fused_dir, record_dir, methods_list, metrics_id=metrics_id, log_address=log_address)
 
     # export result in excel file
     metrics_id = [3, 4, 11]  # we choose these metrics shown in the paper（Qg, Qm, Qcb）
     records_list = os.listdir(record_dir)
+    ablation_list = ['evaluator_se_absmax.npy', 'evaluator_se_average.npy', 'evaluator_se_l1_norm.npy',
+                     'evaluator_se_max.npy', 'evaluator_se_sf.npy', 'evaluator_dense_sf_dm.npy',
+                     'evaluator_se_sf_dm.npy']
+    
+    # Next you should only choose one
+    # For ablation experiment
+    # records_list = ablation_list
+
+    # For comparison with other methods
+    comparison_set = set(records_list) - set(ablation_list)
+    records_list = [item for item in comparison_set]
+    records_list.append('evaluator_se_sf_dm.npy')
+
     export_result(input_dir, output_dir, record_dir, records_list, metrics_id)
 
 

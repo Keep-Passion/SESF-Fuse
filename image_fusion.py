@@ -602,4 +602,11 @@ class ImageFusion(MatlabEngine):
 
     # ********************************************** SESF Fuse **************************************************
     def fuse_by_sesf_fuse(self, img1, img2, fuse_type="se_sf_dm"):
+        """
+        SESF-Fusion
+        :param img1: last image, np.array
+        :param img2: next image, np.array
+        :return: fused result, np.array
+        :return:
+        """
         return sesf_fuse_forward(img1, img2, fuse_type=fuse_type)

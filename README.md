@@ -1,5 +1,5 @@
 # SESF-Fuse
-SESF-Fuse: An unsupervised deep model used for multi-focus image fusion
+SESF-Fuse: An Unsupervised Deep Model for Multi-Focus Image Fusion
 
 ## Branches Introduction
 We provide a general image fusion framework in this branch, which include all the experiments in our paper. Besides, one can easily modify it for new experiment.  

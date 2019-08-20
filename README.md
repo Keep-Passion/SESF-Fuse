@@ -3,7 +3,7 @@ SESF-Fuse: An Unsupervised Deep Model for Multi-Focus Image Fusion
 
 ## Branches Introduction
 We provide a general image fusion framework in this branch, which include all the experiments in our paper. Besides, one can easily modify it for new experiment.  
-We provide the training and testing method of SESF-Fuse in [master branch](https://github.com/MATony/SESF-Fuse/tree/master).
+We provide the training and testing method of SESF-Fuse in [master branch](https://github.com/Keep-Passion/SESF-Fuse/tree/master).
 
 ## Content
 We provide a general framework which consists of almost image fusion algorithms (including our SESF-Fuse) and metrics. All the codes which copied from other site are cited in the script.  

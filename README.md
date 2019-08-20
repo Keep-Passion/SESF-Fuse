@@ -6,11 +6,11 @@ In this work, we propose an unsupervised deep learning model to address multi-fo
 
 ## Visualization
 We show the visualization of fused result in next figure. The first row is near focused source image and the second row is far focused source image. The third row is decision map of our method and the final row is fused result.
-![image](https://github.com/MATony/SESF-Fuse/blob/master/nets/figure/visualization.png)
+![image](https://github.com/Keep-Passion/SESF-Fuse/blob/master/nets/figure/visualization.png)
 
 ## Branches Introduction
 We provide the training and testing method of SESF-Fuse in this branch.  
-We provide a general image fusion framework in [experiment branch](https://github.com/MATony/SESF-Fuse/tree/Experiment), which include all the experiments in our paper. Besides, one can easily modify it for new experiment.
+We provide a general image fusion framework in [experiment branch](https://github.com/Keep-Passion/SESF-Fuse/tree/Experiment), which include all the experiments in our paper. Besides, one can easily modify it for new experiment.
 
 ## Requirements
 Pytorch, Python3.6

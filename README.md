@@ -1,5 +1,5 @@
 # SESF-Fuse
-SESF-Fuse: An unsupervised deep model used for multi-focus image fusion
+SESF-Fuse: An Unsupervised Deep Model for Multi-Focus Image Fusion
 
 ## Abstract
 In this work, we propose an unsupervised deep learning model to address multi-focus image fusion problem. First, we train an encoder-decoder architecture in unsupervised manner to acquire deep feature of input images. And then we utilized those features and spatial frequency to measure activity level, which plays crucial role in multi-focus fusion task. The key point behind of proposed method is that only the objects within the depth-of-field (DOF) have sharp appearance in the photograph while other objects are likely to be blurred. In contrast to previous works, our method analysis sharp appearance in deep feature instead of original image. Experimental results demonstrate that the proposed method achieve the state-of-art fusion performance compared to existing 16 fusion methods in objective and subjective assessment. 

@@ -108,6 +108,7 @@ venv.bak/
 
 # result
 data/result/
+temp/
 
 # fusion_methods
 fusion_methods/

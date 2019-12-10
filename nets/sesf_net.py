@@ -9,7 +9,6 @@ import torchvision.transforms as transforms
 from skimage import morphology
 from skimage.color import rgb2gray
 
-
 class SESF_Fuse():
     """
     Fusion Class
@@ -52,7 +51,6 @@ class SESF_Fuse():
         img2_tensor = self.data_transforms(img2_gray_pil).unsqueeze(0).to(self.device)
 
         dm = self.model.forward("fuse", img1_tensor, img2_tensor, kernel_radius=self.kernel_radius)
-
         # Morphology filter and Small region removal
         h, w = img1.shape[:2]
         se = skimage.morphology.disk(self.ks)  # 'disk' kernel with ks size for structural element
@@ -62,7 +60,6 @@ class SESF_Fuse():
         dm = skimage.morphology.binary_closing(dm, se)
         dm = morphology.remove_small_holes(dm == 1, self.area_ratio * h * w)
         dm = np.where(dm, 1, 0)
-
         # guided filter
         if ndim == 3:
             dm = np.expand_dims(dm, axis=2)

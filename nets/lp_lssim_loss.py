@@ -71,8 +71,8 @@ class LpLssimLoss(nn.Module):
             self.channel = channel
 
         # Lp
-        # Lp = torch.sqrt(torch.sum(torch.pow((image_in - image_out), 2)))  # 二范数
-        Lp = torch.sum(torch.abs(image_in - image_out))  # 一范数
+        Lp = torch.sqrt(torch.sum(torch.pow((image_in - image_out), 2)))  # 二范数
+        # Lp = torch.sum(torch.abs(image_in - image_out))  # 一范数
         # Lssim
         Lssim = 1 - self._ssim(image_in, image_out, self.window, self.window_size, self.channel, self.size_average)
         return Lp + Lssim * 1000, Lp, Lssim * 1000

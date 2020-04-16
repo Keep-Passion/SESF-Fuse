@@ -108,6 +108,7 @@ venv.bak/
 
 # different_methods
 data/result/multi_focus/different_methods/
+data/result/
 
 #idea
 .idea/

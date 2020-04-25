@@ -8,17 +8,23 @@ import torch.nn.functional as f
 import torchvision.transforms as transforms
 from skimage import morphology
 from skimage.color import rgb2gray
-
+from collections import OrderedDict
 class SESF_Fuse():
     """
     Fusion Class
     """
-    def __init__(self):
+    def __init__(self, attention = 'CSE'):
         # initialize model
         self.device = "cuda:0"
-        self.model = SESFuseNet()
-        self.model_path = os.path.join(os.getcwd(), "nets", "parameters", "se_lp_lssim_1e3_batch30_epoch48.pkl")
-        self.model.load_state_dict(torch.load(self.model_path, map_location={'cuda:3': 'cuda:0'}))
+        self.model = SESFuseNet(attention)
+        self.model_path = os.path.join(os.getcwd(), "nets", "parameters", "lp+lssim_se_sf_net_cse_times30")
+        new_ckpt = OrderedDict()
+        ckpt = torch.load(self.model_path)
+        for k,v in ckpt.items():
+            name = k[7:]
+            new_ckpt[name] = v
+        #self.model.load_state_dict(torch.load(self.model_path, map_location={'cuda:3': 'cuda:0'}))
+        self.model.load_state_dict(new_ckpt)
         self.model.to(self.device)
         self.model.eval()
 
@@ -68,7 +74,7 @@ class SESF_Fuse():
         dm = self.guided_filter(temp_fused, dm, self.gf_radius, eps=self.eps)
         fused = img1 * 1.0 * dm + img2 * 1.0 * (1 - dm)
         fused = np.clip(fused, 0, 255).astype(np.uint8)
-        return fused
+        return fused, np.clip(dm,0,1)
 
     @staticmethod
     def box_filter(imgSrc, r):
@@ -157,17 +163,28 @@ class SESFuseNet(nn.Module):
     """
     The Class of SESFuseNet
     """
-    def __init__(self):
+    def __init__(self, attention = 'CSE'):
         super(SESFuseNet, self).__init__()
         # Encode
         self.features = self.conv_block(in_channels=1, out_channels=16)
-        self.se_f = SELayer(16, 8)
         self.conv_encode_1 = self.conv_block(16, 16)
-        self.se_1 = SELayer(16, 8)
         self.conv_encode_2 = self.conv_block(32, 16)
-        self.se_2 = SELayer(16, 8)
         self.conv_encode_3 = self.conv_block(48, 16)
-        self.se_3 = SELayer(16, 8)
+        if(attention == 'CSE'):
+            self.se_f = CSELayer(16, 8)
+            self.se_1 = CSELayer(16, 8)
+            self.se_2 = CSELayer(16, 8)
+            self.se_3 = CSELayer(16, 8)
+        elif(attention == 'SSE'):
+            self.se_f = SSELayer(16)
+            self.se_1 = SSELayer(16)
+            self.se_2 = SSELayer(16)
+            self.se_3 = SSELayer(16)
+        elif(attention == 'SCSE'):
+            self.se_f = SCSELayer(16, 8)
+            self.se_1 = SCSELayer(16, 8)
+            self.se_2 = SCSELayer(16, 8)
+            self.se_3 = SCSELayer(16, 8)
         # Decode
         self.conv_decode_1 = self.conv_block(64, 64)
         self.conv_decode_2 = self.conv_block(64, 32)
@@ -286,9 +303,9 @@ class SESFuseNet(nn.Module):
         dm_np = dm_tensor.squeeze().cpu().numpy().astype(np.int)
         return dm_np
 
-class SELayer(nn.Module):
+class CSELayer(nn.Module):
     def __init__(self, channel, reduction=16):
-        super(SELayer, self).__init__()
+        super(CSELayer, self).__init__()
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
         self.fc = nn.Sequential(
             nn.Linear(channel, channel // reduction, bias=False),
@@ -302,3 +319,24 @@ class SELayer(nn.Module):
         y = self.avg_pool(x).view(b, c)
         y = self.fc(y).view(b, c, 1, 1)
         return x * y.expand_as(x)
+class SSELayer(nn.Module):
+    def __init__(self, channel):
+        super(SSELayer, self).__init__()
+        self.fc = nn.Sequential(
+            nn.Conv2d(channel, 1, kernel_size=1, bias=False),
+            nn.Sigmoid()
+        )
+    
+    def forward(self, x):
+        y = self.fc(x) 
+        return x * y 
+class SCSELayer(nn.Module):
+    def __init__(self, channel, reduction=16):
+        super(SCSELayer, self).__init__()
+        self.CSE = CSELayer(channel, reduction=reduction)
+        self.SSE = SSELayer(channel)
+
+    def forward(self, U):
+        SSE = self.SSE(U)
+        CSE = self.CSE(U)
+        return SSE+CSE

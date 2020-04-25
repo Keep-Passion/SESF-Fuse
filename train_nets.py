@@ -19,7 +19,7 @@ epochs = 30
 batch_size = 48
 display_step = 100
 shuffle = True
-
+attention = 'CSE'
 # address
 project_addrsss = os.getcwd()
 train_dir = os.path.join(project_addrsss, "data", "coco2014", "train2014")
@@ -55,7 +55,7 @@ print_and_log("datasets size: {}".format(datasets_sizes), is_out_log_file, log_a
 # models
 training_setup_seed(1)  # setup seed for all parameters, numpy.random, random, pytorch
 # model = UNet(in_channel=1, out_channel=1)
-model = SESFuseNet()
+model = SESFuseNet(attention)
 model.to(gpu_device)
 # model = nn.DataParallel(model, device_ids=gpu_device_for_parallel)
 

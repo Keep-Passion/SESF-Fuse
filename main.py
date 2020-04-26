@@ -10,7 +10,7 @@ def main(input_dir, output_dir):
     :param output_dir: str, output dir with all fused images
     :return:
     """
-    sesf = SESF_Fuse()
+    sesf = SESF_Fuse("cse")
     images_name = sorted(list({item[:-6] for item in os.listdir(input_dir)}))
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)

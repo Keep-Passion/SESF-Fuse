@@ -13,11 +13,11 @@ class SESF_Fuse():
     """
     Fusion Class
     """
-    def __init__(self, attention = 'CSE'):
+    def __init__(self, attention = 'cse'):
         # initialize model
         self.device = "cuda:0"
         self.model = SESFuseNet(attention)
-        self.model_path = os.path.join(os.getcwd(), "nets", "parameters", "lp+lssim_se_sf_net_cse_times30")
+        self.model_path = os.path.join(os.getcwd(), "nets", "parameters", "lp+lssim_se_sf_net_times30")
         new_ckpt = OrderedDict()
         ckpt = torch.load(self.model_path)
         for k,v in ckpt.items():
@@ -74,7 +74,7 @@ class SESF_Fuse():
         dm = self.guided_filter(temp_fused, dm, self.gf_radius, eps=self.eps)
         fused = img1 * 1.0 * dm + img2 * 1.0 * (1 - dm)
         fused = np.clip(fused, 0, 255).astype(np.uint8)
-        return fused, np.clip(dm,0,1)
+        return fused
 
     @staticmethod
     def box_filter(imgSrc, r):
@@ -163,24 +163,24 @@ class SESFuseNet(nn.Module):
     """
     The Class of SESFuseNet
     """
-    def __init__(self, attention = 'CSE'):
+    def __init__(self, attention = 'cse'):
         super(SESFuseNet, self).__init__()
         # Encode
         self.features = self.conv_block(in_channels=1, out_channels=16)
         self.conv_encode_1 = self.conv_block(16, 16)
         self.conv_encode_2 = self.conv_block(32, 16)
         self.conv_encode_3 = self.conv_block(48, 16)
-        if(attention == 'CSE'):
+        if(attention == 'cse'):
             self.se_f = CSELayer(16, 8)
             self.se_1 = CSELayer(16, 8)
             self.se_2 = CSELayer(16, 8)
             self.se_3 = CSELayer(16, 8)
-        elif(attention == 'SSE'):
+        elif(attention == 'sse'):
             self.se_f = SSELayer(16)
             self.se_1 = SSELayer(16)
             self.se_2 = SSELayer(16)
             self.se_3 = SSELayer(16)
-        elif(attention == 'SCSE'):
+        elif(attention == 'scse'):
             self.se_f = SCSELayer(16, 8)
             self.se_1 = SCSELayer(16, 8)
             self.se_2 = SCSELayer(16, 8)

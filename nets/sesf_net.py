@@ -18,13 +18,7 @@ class SESF_Fuse():
         self.device = "cuda:0"
         self.model = SESFuseNet(attention)
         self.model_path = os.path.join(os.getcwd(), "nets", "parameters", "lp+lssim_se_sf_net_times30")
-        new_ckpt = OrderedDict()
-        ckpt = torch.load(self.model_path)
-        for k,v in ckpt.items():
-            name = k[7:]
-            new_ckpt[name] = v
-        #self.model.load_state_dict(torch.load(self.model_path, map_location={'cuda:3': 'cuda:0'}))
-        self.model.load_state_dict(new_ckpt)
+        self.model.load_state_dict(torch.load(self.model_path, map_location={'cuda:3': 'cuda:0'}))
         self.model.to(self.device)
         self.model.eval()
 

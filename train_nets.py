@@ -19,7 +19,7 @@ epochs = 30
 batch_size = 48
 display_step = 100
 shuffle = True
-attention = 'CSE'
+attention = 'cse'
 # address
 project_addrsss = os.getcwd()
 train_dir = os.path.join(project_addrsss, "data", "coco2014", "train2014")

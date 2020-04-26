@@ -13,8 +13,8 @@ methods_name = ['gf', 'dsift', 'focus_stack', 'sf',                             
                 'nsct', 'cvt', 'dwt', 'lp',                                                                    # 4,5,6,7
                 'rp', 'dtcwt', "sr", "mwg", 'imf',                                                            # 8,9,10.11,12
                 'cnn_fuse', 'dense_fuse_1e3_add', 'dense_fuse_1e3_l1', 'deep_fuse', "fusion_gan",        # 13,14,15,16,17
-                'se_sf_dm', 'dense_sf_dm', 'se_sf', 'se_average', 'se_max', 'se_absmax', 'se_l1_norm'    # 18,19,20,21,22,23,24
-                ]
+                'se_sf_dm', 'dense_sf_dm', 'se_sf', 'se_average', 'se_max', 'se_absmax', 'se_l1_norm',    # 18,19,20,21,22,23,24
+                'sse_sf_dm','scse_sf_dm']                                                           # 25,26
 
 
 # We provide these metrics, one can use it by using the index
@@ -46,67 +46,72 @@ def fuse_images(input_dir, output_dir, methods_id=[0, 1, 2, 3], log_address="log
     for method_index, method_id in enumerate(methods_id):  # fused by different methods:
         logs.print_and_log("Fusing method: {}".format(methods_name[method_id]))
         for image_index, image_name in enumerate(images_name):  # read every image which need to be fused
-            logs.print_and_log("Analysis {}".format(image_name))
-            # image_dir = os.path.join(input_dir, image_name)
-            img1 = io.imread(os.path.join(input_dir, image_name + "_1.png"))
-            img2 = io.imread(os.path.join(input_dir, image_name + "_2.png"))
-            assert img1.shape == img2.shape, "The two images have different shapes"
-            if method_id == 0:     # Guided Filtering(GF)
-                fused = image_fusion.fuse_by_gf(img1, img2)
-            elif method_id == 1:   # DSIFT
-                fused = image_fusion.fuse_by_dense_sift(img1, img2)
-            elif method_id == 2:   # Focus Stack
-                fused = image_fusion.fuse_by_focus_stack(img1, img2)
-            elif method_id == 3:   # Spatial Frequency(SF)
-                fused = image_fusion.fuse_by_sf(img1, img2)
-            elif method_id == 4:   # NSCT
-                fused = image_fusion.fuse_by_nsct(img1, img2)
-            elif method_id == 5:   # CVT
-                fused = image_fusion.fuse_by_cvt(img1, img2)
-            elif method_id == 6:  # DWT
-                fused = image_fusion.fuse_by_dwt(img1, img2)
-            elif method_id == 7:  # LP
-                fused = image_fusion.fuse_by_lp(img1, img2)
-            elif method_id == 8:  # RP
-                fused = image_fusion.fuse_by_rp(img1, img2)
-            elif method_id == 9:  # DTCWT
-                fused = image_fusion.fuse_by_dtcwt(img1, img2)
-            elif method_id == 10:  # SR
-                fused = image_fusion.fuse_by_sr(img1, img2)
-            elif method_id == 11:  # MWG
-                fused = image_fusion.fuse_by_mwg(img1, img2)
-            elif method_id == 12:  # IMF
-                fused = image_fusion.fuse_by_imf(img1, img2)
-            elif method_id == 13:  # CNN fuse
-                fused = image_fusion.fuse_by_cnn(img1, img2)
-            elif method_id == 14:  # Dense fuse - 1e2 - addition
-                fused = image_fusion.fuse_by_dense_fuse_1e3_add(img1, img2)
-            elif method_id == 15:  # Dense fuse- 1e2 - l1 strategy
-                fused = image_fusion.fuse_by_dense_fuse_1e3_l1(img1, img2)
-            elif method_id == 16:  # Deep fuse
-                fused = image_fusion.fuse_by_deep_fuse(img1, img2)
-            elif method_id == 17:  # Fusion Gan
-                # We recommend to only use in infrared and visible
-                # image fusion as the paper designed for
-                fused = image_fusion.fuse_by_fuison_gan(img1, img2)
-            elif method_id == 18:  # SESF Fuse - se_sf_dm
-                fused = image_fusion.fuse_by_sesf_fuse(img1, img2, fuse_type='se_sf_dm')
-            # Below experiments are used for ablation experiments in our paper
-            elif method_id == 19:  # SESF Fuse - dense_sf_dm
-                fused = image_fusion.fuse_by_sesf_fuse(img1, img2, fuse_type='dense_sf_dm')
-            elif method_id == 20:  # SESF Fuse - se_sf
-                fused = image_fusion.fuse_by_sesf_fuse(img1, img2, fuse_type='se_sf')
-            elif method_id == 21:  # SESF Fuse - se_average
-                fused = image_fusion.fuse_by_sesf_fuse(img1, img2, fuse_type='se_average')
-            elif method_id == 22:  # SESF Fuse - se_max
-                fused = image_fusion.fuse_by_sesf_fuse(img1, img2, fuse_type='se_max')
-            elif method_id == 23:  # SESF Fuse - se_absmax
-                fused = image_fusion.fuse_by_sesf_fuse(img1, img2, fuse_type='se_absmax')
-            elif method_id == 24:  # SESF Fuse - se_l1_norm
-                fused = image_fusion.fuse_by_sesf_fuse(img1, img2, fuse_type='se_l1_norm')
-            fused_dir = os.path.join(output_dir, "different_methods", methods_name[method_id])
-            make_out_dir(fused_dir)
-            io.imsave(os.path.join(fused_dir, image_name + ".png"), fused)
+            if not image_name.startswith('.'):
+                logs.print_and_log("Analysis {}".format(image_name))
+                # image_dir = os.path.join(input_dir, image_name)
+                img1 = io.imread(os.path.join(input_dir, image_name + "_1.png"))
+                img2 = io.imread(os.path.join(input_dir, image_name + "_2.png"))
+                assert img1.shape == img2.shape, "The two images have different shapes"
+                if method_id == 0:     # Guided Filtering(GF)
+                    fused = image_fusion.fuse_by_gf(img1, img2)
+                elif method_id == 1:   # DSIFT
+                    fused = image_fusion.fuse_by_dense_sift(img1, img2)
+                elif method_id == 2:   # Focus Stack
+                    fused = image_fusion.fuse_by_focus_stack(img1, img2)
+                elif method_id == 3:   # Spatial Frequency(SF)
+                    fused = image_fusion.fuse_by_sf(img1, img2)
+                elif method_id == 4:   # NSCT
+                    fused = image_fusion.fuse_by_nsct(img1, img2)
+                elif method_id == 5:   # CVT
+                    fused = image_fusion.fuse_by_cvt(img1, img2)
+                elif method_id == 6:  # DWT
+                    fused = image_fusion.fuse_by_dwt(img1, img2)
+                elif method_id == 7:  # LP
+                    fused = image_fusion.fuse_by_lp(img1, img2)
+                elif method_id == 8:  # RP
+                    fused = image_fusion.fuse_by_rp(img1, img2)
+                elif method_id == 9:  # DTCWT
+                    fused = image_fusion.fuse_by_dtcwt(img1, img2)
+                elif method_id == 10:  # SR
+                    fused = image_fusion.fuse_by_sr(img1, img2)
+                elif method_id == 11:  # MWG
+                    fused = image_fusion.fuse_by_mwg(img1, img2)
+                elif method_id == 12:  # IMF
+                    fused = image_fusion.fuse_by_imf(img1, img2)
+                elif method_id == 13:  # CNN fuse
+                    fused = image_fusion.fuse_by_cnn(img1, img2)
+                elif method_id == 14:  # Dense fuse - 1e2 - addition
+                    fused = image_fusion.fuse_by_dense_fuse_1e3_add(img1, img2)
+                elif method_id == 15:  # Dense fuse- 1e2 - l1 strategy
+                    fused = image_fusion.fuse_by_dense_fuse_1e3_l1(img1, img2)
+                elif method_id == 16:  # Deep fuse
+                    fused = image_fusion.fuse_by_deep_fuse(img1, img2)
+                elif method_id == 17:  # Fusion Gan
+                    # We recommend to only use in infrared and visible
+                    # image fusion as the paper designed for
+                    fused = image_fusion.fuse_by_fuison_gan(img1, img2)
+                elif method_id == 18:  # SESF Fuse - se_sf_dm
+                    fused = image_fusion.fuse_by_sesf_fuse(img1, img2, fuse_type='se_sf_dm')
+                    # Below experiments are used for ablation experiments in our paper
+                elif method_id == 19:  # SESF Fuse - dense_sf_dm
+                    fused = image_fusion.fuse_by_sesf_fuse(img1, img2, fuse_type='dense_sf_dm')
+                elif method_id == 20:  # SESF Fuse - se_sf
+                    fused = image_fusion.fuse_by_sesf_fuse(img1, img2, fuse_type='se_sf')
+                elif method_id == 21:  # SESF Fuse - se_average
+                    fused = image_fusion.fuse_by_sesf_fuse(img1, img2, fuse_type='se_average')
+                elif method_id == 22:  # SESF Fuse - se_max
+                    fused = image_fusion.fuse_by_sesf_fuse(img1, img2, fuse_type='se_max')
+                elif method_id == 23:  # SESF Fuse - se_absmax
+                    fused = image_fusion.fuse_by_sesf_fuse(img1, img2, fuse_type='se_absmax')
+                elif method_id == 24:  # SESF Fuse - se_l1_norm
+                    fused = image_fusion.fuse_by_sesf_fuse(img1, img2, fuse_type='se_l1_norm')
+                elif method_id == 25:  # SESF Fuse - sse_sf
+                    fused = image_fusion.fuse_by_sesf_fuse(img1, img2, fuse_type='sse_sf_dm')
+                elif method_id == 26:  # SESF Fuse - scse_sf
+                    fused = image_fusion.fuse_by_sesf_fuse(img1, img2, fuse_type='scse_sf_dm')
+                fused_dir = os.path.join(output_dir, "different_methods", methods_name[method_id])
+                make_out_dir(fused_dir)
+                io.imsave(os.path.join(fused_dir, image_name + ".png"), fused)
     logs.print_and_log("End Fusing, Please check output files")
 
 
@@ -159,7 +164,7 @@ def export_result(input_dir, output_dir, record_dir, records_list, metrics_id):
     :param records_list: the npy file that need to be export
     :return: None
     """
-    images_name = sorted(list({item[:-6] for item in os.listdir(input_dir)}))
+    images_name = sorted(list({item[:-6] for item in os.listdir(input_dir) if not item.startswith('.')}))
     # shape(method_number, metric_number, image_number)
     eval_result = np.zeros((len(records_list), len(metrics_id), len(images_name)))
     local_metrics_name = []
@@ -170,7 +175,6 @@ def export_result(input_dir, output_dir, record_dir, records_list, metrics_id):
         local_methods_name.append(evaluator_name[10:-4])
         eval_result[method_index, :, :] = \
             np.load(os.path.join(record_dir, evaluator_name))[metrics_id, :]
-
     out_excel_address = os.path.join(output_dir, "result.xlsx")
     methods_number = len(local_methods_name)
     metrics_number = len(local_metrics_name)
@@ -256,7 +260,8 @@ def multi_focus():
 
     # # fuse images by methods in methods_id
     # methods_id = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18]
-    # fuse_images(input_dir, output_dir, methods_id=methods_id, log_address=log_address)
+    methods_id = [4]
+    fuse_images(input_dir, output_dir, methods_id=methods_id, log_address=log_address)
     #
     # # evaluate result by metrics in metrics_id
     # metrics_id = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
@@ -268,7 +273,7 @@ def multi_focus():
     records_list = os.listdir(record_dir)
     ablation_list = ['evaluator_se_absmax.npy', 'evaluator_se_average.npy', 'evaluator_se_l1_norm.npy',
                      'evaluator_se_max.npy', 'evaluator_se_sf.npy', 'evaluator_dense_sf_dm.npy',
-                     'evaluator_se_sf_dm.npy']
+                     'evaluator_se_sf_dm.npy','evaluator_sse_sf_dm.npy','evaluator_scse_sf_dm.npy']
     
     # Next you should only choose one
     # For ablation experiment

@@ -18,7 +18,7 @@ class ImageFusion(MatlabEngine):
     def __init__(self):
         super(ImageFusion, self).__init__()
         # os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-        os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+        os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
     def __del__(self):
         super(ImageFusion, self).__del__()

@@ -17,7 +17,7 @@ class SESF_Fuse():
         # initialize model
         self.device = "cuda:0"
         self.model = SESFuseNet(attention)
-        self.model_path = os.path.join(os.getcwd(), "nets", "parameters", "lp+lssim_se_sf_net_times30")
+        self.model_path = os.path.join(os.getcwd(), "nets", "parameters", "lp+lssim_se_sf_net_times30.pkl")
         self.model.load_state_dict(torch.load(self.model_path, map_location={'cuda:3': 'cuda:0'}))
         self.model.to(self.device)
         self.model.eval()

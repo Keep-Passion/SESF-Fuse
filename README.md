@@ -18,8 +18,10 @@ Pytorch, Python3.6
 ## Citation
 If you use it successfully for your research please be so kind to cite [the paper](https://link.springer.com/article/10.1007/s00521-020-05358-9#citeas).
 
-
 Ma, B., Zhu, Y., Yin, X. et al. SESF-Fuse: an unsupervised deep model for multi-focus image fusion. Neural Comput & Applic (2020). https://doi.org/10.1007/s00521-020-05358-9
 
 ## Acknowledgement
 The authors acknowledge the financial support from the National Key Research and Development Program of China (No. 2016YFB0700500).
+
+## Recommendation
+Our new work GACN can be found at [the paper](https://github.com/Keep-Passion/GACN) and [the code](https://arxiv.org/abs/2010.08751).

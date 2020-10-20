@@ -24,4 +24,4 @@ Ma, B., Zhu, Y., Yin, X. et al. SESF-Fuse: an unsupervised deep model for multi-
 The authors acknowledge the financial support from the National Key Research and Development Program of China (No. 2016YFB0700500).
 
 ## Recommendation
-Our new work GACN can be found at [the paper](https://github.com/Keep-Passion/GACN) and [the code](https://arxiv.org/abs/2010.08751).
+Our new work GACN can be found at [the paper](https://arxiv.org/abs/2010.08751) and [the code](https://github.com/Keep-Passion/GACN).
